@@ -1,5 +1,9 @@
 package com.company.neural_temp;
 
+import com.company.neural_temp.learn.Adaline;
+import com.company.neural_temp.learn.Perceptron;
+import com.company.neural_temp.learn.Training;
+
 import java.util.ArrayList;
 
 public class NeuralNet {
@@ -9,32 +13,196 @@ public class NeuralNet {
     private OutputLayer outputLayer;
     private int numberOfHiddenLayers;
 
-    public void initNet() {
-        inputLayer = new InputLayer();
-        inputLayer.setNumberOfNeuronsInLayer(2);
+    private double[][] trainSet;
+    private double[] realOutputSet;
+    private int maxEpochs;
+    private double learningRate;
+    private double targetError;
+    private double trainingError;
+    private Training.TrainingTypesENUM trainType;
+    private Training.ActivationFncEnum activationFnc;
+    private ArrayList<Double> listOfMSE = new ArrayList<Double>();
 
-        numberOfHiddenLayers = 2;
+    public NeuralNet initNet(int numberOfInputNeurons, int numberOfHiddenLayers, int numberOfNeuronsInHiddenLayer, int numberOfOutputNeurons) {
+        inputLayer = new InputLayer();
+        inputLayer.setNumberOfNeuronsInLayer(numberOfInputNeurons);
+        inputLayer = inputLayer.initLayer(inputLayer);
+
         listOfHiddenLayer = new ArrayList<>();
-        for (int i = 0; i < numberOfHiddenLayers; i++) {
-            hiddenLayer = new HiddenLayer();
-            hiddenLayer.setNumberOfNeuronsInLayer(3);
-            listOfHiddenLayer.add(hiddenLayer);
+        if (numberOfHiddenLayers > 0) {
+            for (int i = 0; i < numberOfHiddenLayers; i++) {
+                hiddenLayer = new HiddenLayer();
+                hiddenLayer.setNumberOfNeuronsInLayer(numberOfHiddenLayers);
+                listOfHiddenLayer.add(hiddenLayer);
+            }
+            listOfHiddenLayer = hiddenLayer.initLayer(hiddenLayer, listOfHiddenLayer, inputLayer, outputLayer);
         }
 
         outputLayer = new OutputLayer();
-        outputLayer.setNumberOfNeuronsInLayer(1);
-
-        inputLayer = inputLayer.initLayer(inputLayer);
-        listOfHiddenLayer = hiddenLayer.initLayer(hiddenLayer, listOfHiddenLayer, inputLayer, outputLayer);
-
+        outputLayer.setNumberOfNeuronsInLayer(numberOfOutputNeurons);
         outputLayer = outputLayer.initLayer(outputLayer);
+
+        NeuralNet newNet = new NeuralNet();
+        newNet.setInputLayer(inputLayer);
+        newNet.setHiddenLayer(hiddenLayer);
+        newNet.setListOfHiddenLayer(listOfHiddenLayer);
+        newNet.setNumberOfHiddenLayers(numberOfHiddenLayers);
+        newNet.setOutputLayer(outputLayer);
+
+        return newNet;
     }
 
-    public void printNet() {
-        inputLayer.printLayer(inputLayer);
+    public NeuralNet trainNet (NeuralNet n) {
+        NeuralNet trainedNet = new NeuralNet();
+
+        switch (n.trainType) {
+            case PERCEPTRON:
+                Perceptron t = new Perceptron();
+                trainedNet = t.train(n);
+                return trainedNet;
+            case ADALINE:
+                Adaline a = new Adaline();
+                trainedNet = a.train(n);
+                return trainedNet;
+            default:
+                throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypeENUM");
+        }
+    }
+
+    public void printTrainedNetResult(NeuralNet n) {
+        switch (n.trainType) {
+            case PERCEPTRON:
+                Perceptron t = new Perceptron();
+                t.printTrainedNetResult( n );
+                break;
+            case ADALINE:
+                Adaline a = new Adaline();
+                a.printTrainedNetResult( n );
+                break;
+            default:
+                throw new IllegalArgumentException(n.trainType+" does not exist in TrainingTypesENUM");
+        }
+    }
+
+    public InputLayer getInputLayer() {
+        return inputLayer;
+    }
+
+    public void setInputLayer(InputLayer inputLayer) {
+        this.inputLayer = inputLayer;
+    }
+
+    public HiddenLayer getHiddenLayer() {
+        return hiddenLayer;
+    }
+
+    public void setHiddenLayer(HiddenLayer hiddenLayer) {
+        this.hiddenLayer = hiddenLayer;
+    }
+
+    public ArrayList<HiddenLayer> getListOfHiddenLayer() {
+        return listOfHiddenLayer;
+    }
+
+    public void setListOfHiddenLayer(ArrayList<HiddenLayer> listOfHiddenLayer) {
+        this.listOfHiddenLayer = listOfHiddenLayer;
+    }
+
+    public OutputLayer getOutputLayer() {
+        return outputLayer;
+    }
+
+    public void setOutputLayer(OutputLayer outputLayer) {
+        this.outputLayer = outputLayer;
+    }
+
+    public int getNumberOfHiddenLayers() {
+        return numberOfHiddenLayers;
+    }
+
+    public void setNumberOfHiddenLayers(int numberOfHiddenLayers) {
+        this.numberOfHiddenLayers = numberOfHiddenLayers;
+    }
+
+    public double[][] getTrainSet() {
+        return trainSet;
+    }
+
+    public void setTrainSet(double[][] trainSet) {
+        this.trainSet = trainSet;
+    }
+
+    public double[] getRealOutputSet() {
+        return realOutputSet;
+    }
+
+    public void setRealOutputSet(double[] realOutputSet) {
+        this.realOutputSet = realOutputSet;
+    }
+
+    public int getMaxEpochs() {
+        return maxEpochs;
+    }
+
+    public void setMaxEpochs(int maxEpochs) {
+        this.maxEpochs = maxEpochs;
+    }
+
+    public double getLearningRate() {
+        return learningRate;
+    }
+
+    public void setLearningRate(double learningRate) {
+        this.learningRate = learningRate;
+    }
+
+    public double getTargetError() {
+        return targetError;
+    }
+
+    public void setTargetError(double targetError) {
+        this.targetError = targetError;
+    }
+
+    public double getTrainingError() {
+        return trainingError;
+    }
+
+    public void setTrainingError(double trainingError) {
+        this.trainingError = trainingError;
+    }
+
+    public Training.TrainingTypesENUM getTrainType() {
+        return trainType;
+    }
+
+    public void setTrainType(Training.TrainingTypesENUM trainType) {
+        this.trainType = trainType;
+    }
+
+    public Training.ActivationFncEnum getActivationFnc() {
+        return activationFnc;
+    }
+
+    public void setActivationFnc(Training.ActivationFncEnum activationFnc) {
+        this.activationFnc = activationFnc;
+    }
+
+    public ArrayList<Double> getListOfMSE() {
+        return listOfMSE;
+    }
+
+    public void setListOfMSE(ArrayList<Double> listOfMSE) {
+        this.listOfMSE = listOfMSE;
+    }
+
+    public void printNet(NeuralNet n) {
+        inputLayer.printLayer(n.getInputLayer());
         System.out.println();
-        hiddenLayer.printLayer(listOfHiddenLayer);
-        System.out.println();
-        outputLayer.printLayer(outputLayer);
+        if (n.getHiddenLayer() != null) {
+            hiddenLayer.printLayer(n.getListOfHiddenLayer());
+            System.out.println();
+        }
+        outputLayer.printLayer(n.getOutputLayer());
     }
 }

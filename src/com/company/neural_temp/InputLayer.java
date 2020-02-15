@@ -24,6 +24,11 @@ public class InputLayer extends Layer {
         return inputLayer;
     }
 
+    @Override
+    public void setNumberOfNeuronsInLayer(int numberOfNeuronsInLayer) {
+        this.numberOfNeuronsInLayer = numberOfNeuronsInLayer + 1;
+    }
+
     public void printLayer(InputLayer inputLayer) {
         System.out.println("### INPUT LAYER ###");
         int n = 1;

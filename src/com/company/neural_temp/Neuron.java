@@ -6,6 +6,9 @@ import java.util.Random;
 public class Neuron {
     private ArrayList<Double> listOfWeightIn;
     private ArrayList<Double> listOfWeightOut;
+    private double outputValue;
+    private double error;
+    private double sensibility;
 
     public double initNeuron() {
         Random r = new Random();
@@ -26,5 +29,29 @@ public class Neuron {
 
     public void setListOfWeightOut(ArrayList<Double> listOfWeightOut) {
         this.listOfWeightOut = listOfWeightOut;
+    }
+
+    public double getOutputValue() {
+        return outputValue;
+    }
+
+    public void setOutputValue(double outputValue) {
+        this.outputValue = outputValue;
+    }
+
+    public double getError() {
+        return error;
+    }
+
+    public void setError(double error) {
+        this.error = error;
+    }
+
+    public double getSensibility() {
+        return sensibility;
+    }
+
+    public void setSensibility(double sensibility) {
+        this.sensibility = sensibility;
     }
 }

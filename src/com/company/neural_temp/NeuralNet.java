@@ -15,13 +15,17 @@ public class NeuralNet {
 
     private double[][] trainSet;
     private double[] realOutputSet;
+    private double[][] realMatrixOutputSet;
     private int maxEpochs;
     private double learningRate;
     private double targetError;
     private double trainingError;
+    private double errorMean;
+
+    private ArrayList<Double> listOfMSE = new ArrayList<Double>();
     private Training.TrainingTypesENUM trainType;
     private Training.ActivationFncEnum activationFnc;
-    private ArrayList<Double> listOfMSE = new ArrayList<Double>();
+    private Training.ActivationFncEnum activationFncOutputLayer;
 
     public NeuralNet initNet(int numberOfInputNeurons, int numberOfHiddenLayers, int numberOfNeuronsInHiddenLayer, int numberOfOutputNeurons) {
         inputLayer = new InputLayer();
@@ -194,6 +198,30 @@ public class NeuralNet {
 
     public void setListOfMSE(ArrayList<Double> listOfMSE) {
         this.listOfMSE = listOfMSE;
+    }
+
+    public double[][] getRealMatrixOutputSet() {
+        return realMatrixOutputSet;
+    }
+
+    public void setRealMatrixOutputSet(double[][] realMatrixOutputSet) {
+        this.realMatrixOutputSet = realMatrixOutputSet;
+    }
+
+    public double getErrorMean() {
+        return errorMean;
+    }
+
+    public void setErrorMean(double errorMean) {
+        this.errorMean = errorMean;
+    }
+
+    public Training.ActivationFncEnum getActivationFncOutputLayer() {
+        return activationFncOutputLayer;
+    }
+
+    public void setActivationFncOutputLayer(Training.ActivationFncEnum activationFncOutputLayer) {
+        this.activationFncOutputLayer = activationFncOutputLayer;
     }
 
     public void printNet(NeuralNet n) {

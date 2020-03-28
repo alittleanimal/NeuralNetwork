@@ -12,7 +12,7 @@ public abstract class Training {
     private double mse;
 
     public enum TrainingTypesENUM {
-        PERCEPTRON, ADALINE, BACKPROPAGATION
+        PERCEPTRON, ADALINE, BACKPROPAGATION, LEVENBERG_MARQUARDT,
     }
 
     public enum ActivationFncEnum {
@@ -158,7 +158,7 @@ public abstract class Training {
         int rows = trainedNet.getTrainSet().length;
         int cols = trainedNet.getTrainSet()[0].length;
 
-        ArrayList<Double> inputWeightIn = new ArrayList<Double>();
+        ArrayList<Double> inputWeightIn = new ArrayList<>();
 
         for (int i = 0; i < rows; i++) {
             double netValue = 0.0;

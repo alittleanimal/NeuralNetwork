@@ -1,8 +1,6 @@
 package com.company.neural_temp;
 
-import com.company.neural_temp.learn.Adaline;
-import com.company.neural_temp.learn.Perceptron;
-import com.company.neural_temp.learn.Training;
+import com.company.neural_temp.learn.*;
 
 import java.util.ArrayList;
 
@@ -22,28 +20,31 @@ public class NeuralNet {
     private double trainingError;
     private double errorMean;
 
-    private ArrayList<Double> listOfMSE = new ArrayList<Double>();
+    private ArrayList<Double> listOfMSE = new ArrayList<>();
     private Training.TrainingTypesENUM trainType;
     private Training.ActivationFncEnum activationFnc;
     private Training.ActivationFncEnum activationFncOutputLayer;
 
     public NeuralNet initNet(int numberOfInputNeurons, int numberOfHiddenLayers, int numberOfNeuronsInHiddenLayer, int numberOfOutputNeurons) {
         inputLayer = new InputLayer();
-        inputLayer.setNumberOfNeuronsInLayer(numberOfInputNeurons);
-        inputLayer = inputLayer.initLayer(inputLayer);
+        inputLayer.setNumberOfNeuronsInLayer( numberOfInputNeurons );
 
         listOfHiddenLayer = new ArrayList<>();
-        if (numberOfHiddenLayers > 0) {
-            for (int i = 0; i < numberOfHiddenLayers; i++) {
-                hiddenLayer = new HiddenLayer();
-                hiddenLayer.setNumberOfNeuronsInLayer(numberOfHiddenLayers);
-                listOfHiddenLayer.add(hiddenLayer);
-            }
-            listOfHiddenLayer = hiddenLayer.initLayer(hiddenLayer, listOfHiddenLayer, inputLayer, outputLayer);
+        for (int i = 0; i < numberOfHiddenLayers; i++) {
+            hiddenLayer = new HiddenLayer();
+            hiddenLayer.setNumberOfNeuronsInLayer( numberOfNeuronsInHiddenLayer );
+            listOfHiddenLayer.add( hiddenLayer );
         }
 
         outputLayer = new OutputLayer();
-        outputLayer.setNumberOfNeuronsInLayer(numberOfOutputNeurons);
+        outputLayer.setNumberOfNeuronsInLayer( numberOfOutputNeurons );
+
+        inputLayer = inputLayer.initLayer(inputLayer);
+
+        if(numberOfHiddenLayers > 0) {
+            listOfHiddenLayer = hiddenLayer.initLayer(hiddenLayer, listOfHiddenLayer, inputLayer, outputLayer);
+        }
+
         outputLayer = outputLayer.initLayer(outputLayer);
 
         NeuralNet newNet = new NeuralNet();
@@ -67,6 +68,14 @@ public class NeuralNet {
             case ADALINE:
                 Adaline a = new Adaline();
                 trainedNet = a.train(n);
+                return trainedNet;
+            case BACKPROPAGATION:
+                Backpropagation b = new Backpropagation();
+                trainedNet = b.train(n);
+                return trainedNet;
+            case LEVENBERG_MARQUARDT:
+                LevenbergMarquardt mq = new LevenbergMarquardt();
+                trainedNet = mq.train(n);
                 return trainedNet;
             default:
                 throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypeENUM");

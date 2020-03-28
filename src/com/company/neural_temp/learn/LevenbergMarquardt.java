@@ -2,6 +2,7 @@ package com.company.neural_temp.learn;
 
 import com.company.neural_temp.NeuralNet;
 import com.company.neural_temp.Neuron;
+import com.company.neural_temp.util.IdentityMatrix;
 import com.company.neural_temp.util.Matrix;
 
 import java.util.ArrayList;
@@ -36,7 +37,47 @@ public class LevenbergMarquardt extends Backpropagation {
     }
 
     private NeuralNet updateWeights(NeuralNet n) {
+        Matrix term1 = jacobian.transpose().multiply(jacobian).add(new IdentityMatrix(jacobian.getNumberOfColumns()).multiply(damping));
+        Matrix term2 = jacobian.transpose().multiply(error);
+        Matrix delta = term1.inverse().multiply(term2);
 
+        ArrayList<Neuron> outputLayer = new ArrayList<>();
+        outputLayer = n.getOutputLayer().getListOfNeurons();
+
+        ArrayList<Neuron> hiddenLayer = new ArrayList<>();
+        hiddenLayer = n.getListOfHiddenLayer().get(0).getListOfNeurons();
+
+        int numberOfInputs = n.getInputLayer().getNumberOfNeuronsInLayer();
+        int numberOfHiddenNeurons = n.getHiddenLayer().getNumberOfNeuronsInLayer();
+        int numberOfOutputs = n.getOutputLayer().getNumberOfNeuronsInLayer();
+
+        int i = 0;
+        for (Neuron hidden : hiddenLayer) {
+            ArrayList<Double> hiddenLayerInputWeights = new ArrayList<>();
+            hiddenLayerInputWeights = hidden.getListOfWeightIn();
+
+            if (hiddenLayerInputWeights.size() > 0) {
+                double newWeight = 0.0;
+                for (int j = 0; j < n.getInputLayer().getNumberOfNeuronsInLayer(); j++) {
+                    newWeight = hiddenLayerInputWeights.get(i) + delta.getValue(i * (numberOfInputs) + j, 0);
+                    hidden.getListOfWeightIn().set(i, newWeight);
+                }
+            }
+            i++;
+        }
+
+        i = 0;
+        for (Neuron output : outputLayer) {
+            int j = 0;
+            double newWeight = 0.0;
+            for (Neuron neuron : hiddenLayer) {
+                newWeight = neuron.getListOfWeightOut().get(i)
+                        + delta.getValue(numberOfInputs * (numberOfHiddenNeurons - 1) + (i * numberOfHiddenNeurons) + j, 0);
+                neuron.getListOfWeightOut().set(i, newWeight);
+                j++;
+            }
+            i++;
+        }
 
         return n;
     }

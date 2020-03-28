@@ -16,15 +16,15 @@ public class HiddenLayer extends Layer {
             for (int j = 0; j < hiddenLayer.getNumberOfNeuronsInLayer(); j++) {
                 Neuron neuron = new Neuron();
 
-                int limitIn;
-                int limitOut;
+                int limitIn = 0;
+                int limitOut = 0;
 
                 if (i == 0) { // first
                     limitIn = inputLayer.getNumberOfNeuronsInLayer();
                     if (numberOfHiddenLayers > 1) {
                         limitOut = listOfHiddenLayer.get(i + 1).getNumberOfNeuronsInLayer();
-                    } else {
-                        limitOut = listOfHiddenLayer.get(i).getNumberOfNeuronsInLayer();
+                    } else if(numberOfHiddenLayers == 1) {
+                        limitOut = outputLayer.getNumberOfNeuronsInLayer();
                     }
                 } else if (i == numberOfHiddenLayers - 1) { // last
                     limitIn = listOfHiddenLayer.get(i - 1).getNumberOfNeuronsInLayer();
@@ -34,11 +34,15 @@ public class HiddenLayer extends Layer {
                     limitOut = listOfHiddenLayer.get(i + 1).getNumberOfNeuronsInLayer();
                 }
 
-                for (int k = 0; k < limitIn; k++) {
-                    listOfWeightIn.add(neuron.initNeuron());
-                }
+                limitIn = limitIn - 1;
+                limitOut = limitOut - 1;
 
-                for (int k = 0; k < limitOut; k++) {
+                if (j >= 1) {
+                    for (int k = 0; k <= limitIn; k++) {
+                        listOfWeightIn.add(neuron.initNeuron());
+                    }
+                }
+                for (int k = 0; k <= limitOut; k++) {
                     listOfWeightOut.add(neuron.initNeuron());
                 }
 

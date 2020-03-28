@@ -32,7 +32,7 @@ public class Backpropagation extends Training {
         return n;
     }
 
-    private NeuralNet forward(NeuralNet n, int row) {
+    protected NeuralNet forward(NeuralNet n, int row) {
         ArrayList<HiddenLayer> listOfHiddenLayer = n.getListOfHiddenLayer();
 
         double estimatedOutput = 0.0;
@@ -96,7 +96,7 @@ public class Backpropagation extends Training {
         return n;
     }
 
-    private NeuralNet backpropagation(NeuralNet n, int row) {
+    protected NeuralNet backpropagation(NeuralNet n, int row) {
         ArrayList<Neuron> outputLayer = new ArrayList<>();
         outputLayer = n.getOutputLayer().getListOfNeurons();
 

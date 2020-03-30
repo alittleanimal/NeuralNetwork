@@ -12,6 +12,7 @@ public class NeuralNet {
     private int numberOfHiddenLayers;
 
     private double[][] trainSet;
+    private double[][] validationSet;
     private double[] realOutputSet;
     private double[][] realMatrixOutputSet;
     private int maxEpochs;
@@ -241,5 +242,13 @@ public class NeuralNet {
             System.out.println();
         }
         outputLayer.printLayer(n.getOutputLayer());
+    }
+
+    public double[][] getValidationSet() {
+        return validationSet;
+    }
+
+    public void setValidationSet(double[][] validationSet) {
+        this.validationSet = validationSet;
     }
 }

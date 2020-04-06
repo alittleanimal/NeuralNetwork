@@ -12,7 +12,7 @@ public abstract class Training {
     private double mse;
 
     public enum TrainingTypesENUM {
-        PERCEPTRON, ADALINE, BACKPROPAGATION, LEVENBERG_MARQUARDT,
+        PERCEPTRON, ADALINE, BACKPROPAGATION, LEVENBERG_MARQUARDT, KOHONEN
     }
 
     public enum ActivationFncEnum {

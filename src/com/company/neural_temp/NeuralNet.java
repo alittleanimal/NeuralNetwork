@@ -1,6 +1,7 @@
 package com.company.neural_temp;
 
 import com.company.neural_temp.learn.*;
+import com.company.neural_temp.som.Kohonen;
 
 import java.util.ArrayList;
 
@@ -78,6 +79,10 @@ public class NeuralNet {
                 LevenbergMarquardt mq = new LevenbergMarquardt();
                 trainedNet = mq.train(n);
                 return trainedNet;
+            case KOHONEN:
+                Kohonen k = new Kohonen();
+                trainedNet = k.train(n);
+                return trainedNet;
             default:
                 throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypeENUM");
         }
@@ -93,8 +98,23 @@ public class NeuralNet {
                 Adaline a = new Adaline();
                 a.printTrainedNetResult( n );
                 break;
+            case BACKPROPAGATION:
+                Backpropagation b = new Backpropagation();
+                b.printTrainedNetResult(n);
+                break;
             default:
                 throw new IllegalArgumentException(n.trainType+" does not exist in TrainingTypesENUM");
+        }
+    }
+
+    public void netValidation(NeuralNet n){
+        switch (n.trainType){
+            case KOHONEN:
+                Kohonen k = new Kohonen();
+                k.netValidation(n);
+                break;
+            default:
+                throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypesEnum");
         }
     }
 

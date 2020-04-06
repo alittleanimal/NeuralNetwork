@@ -33,6 +33,14 @@ public class Kohonen extends Training implements Validation {
 
     private NeuralNet initNet(NeuralNet n) {
 
+        ArrayList<Double> listOfWeightOut = new ArrayList<>();
+
+        for (int i = 0; i< n.getInputLayer().getNumberOfNeuronsInLayer() * n.getOutputLayer().getNumberOfNeuronsInLayer(); i++) {
+            listOfWeightOut.add(0.0);
+        }
+
+        n.getInputLayer().getListOfNeurons().get(0).setListOfWeightOut(listOfWeightOut);
+
         return n;
     }
 
@@ -88,6 +96,29 @@ public class Kohonen extends Training implements Validation {
 
     @Override
     public void netValidation(NeuralNet n) {
+        int rows = n.getValidationSet().length;
 
+        ArrayList<Double> listOfDistances = new ArrayList<>();
+
+        double validationData[][] = n.getValidationSet();
+
+        for (int row_i = 0; row_i < rows; row_i++) {
+            listOfDistances = calcEuclideanDistance(n, validationData, row_i);
+
+            int winnerNeuron = listOfDistances.indexOf(Collections.min(listOfDistances));
+
+            System.out.println("### VALIDATION RESULT ###");
+
+            switch (winnerNeuron) {
+                case 0:
+                    System.out.println("CLUSTER 1");
+                    break;
+                case 1:
+                    System.out.println("CLUSTER 2");
+                    break;
+                default:
+                    throw new IllegalArgumentException("Error! Without neural clustering...");
+            }
+        }
     }
 }

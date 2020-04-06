@@ -9,7 +9,8 @@ public class NeuralNetTest {
         NeuralNetTest test = new NeuralNetTest();
 //        test.testPerceptron();
 //        test.testAdaline();
-        test.testBackpropagation();
+//        test.testBackpropagation();
+        test.testKohonen();
     }
 
     private void testPerceptron() {
@@ -116,5 +117,28 @@ public class NeuralNetTest {
         System.out.println("-----------BACKPROPAGATION TRAINED NET----------");
 
         testNet.printNet(trainedNet);
+    }
+
+    private void testKohonen() {
+        NeuralNet testNet = new NeuralNet();
+
+        testNet = testNet.initNet(2,0,0,2);
+        NeuralNet trainedNet = new NeuralNet();
+
+        testNet.setTrainSet(new double[][]{{ 1.0, -1.0, 1.0 }, { -1.0, -1.0, -1.0 }, { -1.0, -1.0, 1.0 },
+                { 1.0, 1.0, -1.0 }, { -1.0, 1.0, 1.0   }, { 1.0, -1.0, -1.0 }});
+
+        testNet.setValidationSet(new double[][]{{-1.0, 1.0, -1.0}, {1.0, 1.0, 1.0}});
+
+        testNet.setMaxEpochs(10);
+        testNet.setLearningRate(0.1);
+        testNet.setTrainType(Training.TrainingTypesENUM.KOHONEN);
+
+        trainedNet = testNet.trainNet(testNet);
+
+        System.out.println();
+        System.out.println("----------KOHONEN VALIDATION NET----------");
+
+        testNet.netValidation(trainedNet);
     }
 }

@@ -136,7 +136,7 @@ public class Backpropagation extends Training {
                     weight_i++;
                 }
 
-                sensibility = derivativeActivationFnc(n.getActivationFnc(), neuron.getOutputValue() * tempSensibility);
+                sensibility = derivativeActivationFnc(n.getActivationFnc(), neuron.getOutputValue()) * tempSensibility;
                 neuron.setSensibility(sensibility);
             }
         }

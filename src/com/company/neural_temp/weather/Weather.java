@@ -54,24 +54,33 @@ public class Weather {
             c1.plotXYData(n1.getListOfMSE().toArray(), "MSE Error", "Epochs", "Mse Value");
 
             //TRAINING:
-            double[][] matrixOutputRNA = n1Trained.getNetOutputValues(n1Trained);
-            double[][] matrixOutputRNADenorm = new Data().denormalize(matrixOutput, matrixOutputRNA, NORMALIZATION_TYPE);
-
-            ArrayList<double[][]> listOfArraysToJoin = new ArrayList<>();
-            listOfArraysToJoin.add(matrixOutput);
-            listOfArraysToJoin.add(matrixOutputRNADenorm);
-
-            double[][] matrixOutputsJoined = new Data().joinArrays(listOfArraysToJoin);
+            double[][] matrixOutputsJoined = prepareDataForChart(NORMALIZATION_TYPE, matrixOutput, n1Trained);
 
             Chart c2 = new Chart();
             c2.plotXYData(matrixOutputsJoined, "Real x Estimated - Training Data", "Weather Data", "Temperature (Celsius)", Chart.ChartPlotTypeENUM.COMPARISON);
 
             //TEST:
-//            n1Trained.setTrainSet(matrixInputTestRNANorm);
-//            n1Trained.setRealMatrixOutputSet(matrixOutputTestRNANorm);
+            n1Trained.setTrainSet(matrixInputTestRNANorm);
+            n1Trained.setRealMatrixOutputSet(matrixOutputTestRNANorm);
+
+            double[][] matrixOutputsJoinedTest = prepareDataForChart(NORMALIZATION_TYPE, matrixOutputTestRNA, n1Trained);
+
+            Chart c3 = new Chart();
+            c3.plotXYData(matrixOutputsJoinedTest,"Real x Estimated - Test Data", "Weather Data", "Temperature (Celsius)", Chart.ChartPlotTypeENUM.COMPARISON);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static double[][] prepareDataForChart(Data.NormalizationTypesENUM type, double[][] output, NeuralNet n1Trained) {
+        double[][] matrixOutputRNATest = n1Trained.getNetOutputValues(n1Trained);
+        double[][] matrixOutputRNADenormTest = new Data().denormalize(output, matrixOutputRNATest, type);
+
+        ArrayList<double[][]> listOfArraysToJoinTest = new ArrayList<>();
+        listOfArraysToJoinTest.add(output);
+        listOfArraysToJoinTest.add(matrixOutputRNADenormTest);
+
+        return new Data().joinArrays(listOfArraysToJoinTest);
     }
 }

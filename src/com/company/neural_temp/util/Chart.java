@@ -117,21 +117,21 @@ public class Chart {
 		chart.getXYPlot().getRangeAxis().setRange(22, 30);
 		
 		//dashed line (min and max):
-//		XYLineAndShapeRenderer rendererMin = (XYLineAndShapeRenderer) plot.getRenderer();
-//		XYLineAndShapeRenderer rendererMax = (XYLineAndShapeRenderer) plot.getRenderer();
-//		rendererMin.setSeriesPaint(2, Color.black);
-//		rendererMax.setSeriesPaint(3, Color.black);
-//		rendererMin.setSeriesStroke(2, new BasicStroke(
-//                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                1.0f, new float[] {1.0f, 6.0f}, 0.0f
-//            ));
-//
-//		rendererMax.setSeriesStroke(3, new BasicStroke(
-//                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
-//                1.0f, new float[] {1.0f, 6.0f}, 0.0f
-//            ));
+		XYLineAndShapeRenderer rendererMin = (XYLineAndShapeRenderer) plot.getRenderer();
+		XYLineAndShapeRenderer rendererMax = (XYLineAndShapeRenderer) plot.getRenderer();
+		rendererMin.setSeriesPaint(2, Color.black);
+		rendererMax.setSeriesPaint(3, Color.black);
+		rendererMin.setSeriesStroke(2, new BasicStroke(
+                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                1.0f, new float[] {1.0f, 6.0f}, 0.0f
+            ));
+
+		rendererMax.setSeriesStroke(3, new BasicStroke(
+                2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                1.0f, new float[] {1.0f, 6.0f}, 0.0f
+            ));
 //		plot.setRenderer(0, rendererMin);
-//		plot.setRenderer(1, rendererMax);
+//		plot.setRenderer(0, rendererMax);
 //
 //		plot.setDataset(1, dataset);
 		

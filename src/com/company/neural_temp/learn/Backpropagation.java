@@ -7,8 +7,9 @@ import com.company.neural_temp.Neuron;
 import java.util.ArrayList;
 
 public class Backpropagation extends Training {
+    int epoch = 0;
+
     public NeuralNet train(NeuralNet n) {
-        int epoch = 0;
         setMse(1.0);
         while (getMse() > n.getTargetError()) {
             if (epoch >= n.getMaxEpochs()) break;
@@ -23,16 +24,17 @@ public class Backpropagation extends Training {
             }
 
             setMse(sumErrors / rows);
-            System.out.println(getMse());
+            n.getListOfMSE().add(getMse());
+//            System.out.println(getMse());
 
             epoch++;
         }
-
+        System.out.println(getMse());
         System.out.println("Number of epochs: " + epoch);
         return n;
     }
 
-    protected NeuralNet forward(NeuralNet n, int row) {
+    public NeuralNet forward(NeuralNet n, int row) {
         ArrayList<HiddenLayer> listOfHiddenLayer = n.getListOfHiddenLayer();
 
         double estimatedOutput = 0.0;
@@ -63,9 +65,9 @@ public class Backpropagation extends Training {
                 }
 
                 // output hidden layer (2)
+                double netValue = 0.0;
+                double netValueOut = 0.0;
                 for (int outLayer_i = 0; outLayer_i < n.getOutputLayer().getNumberOfNeuronsInLayer(); outLayer_i++) {
-                    double netValue = 0.0;
-                    double netValueOut = 0.0;
 
                     for (Neuron neuron : hiddenLayer.getListOfNeurons()) {
                         double hiddenWeightOut = neuron.getListOfWeightOut().get(outLayer_i);
@@ -149,7 +151,7 @@ public class Backpropagation extends Training {
         }
 
         //fix weights (teach) [hidden layer to input layer]
-        for (Neuron neuron: hiddenLayer) {
+        for (Neuron neuron : hiddenLayer) {
             ArrayList<Double> hiddenLayerInputWeights = new ArrayList<Double>();
             hiddenLayerInputWeights = neuron.getListOfWeightIn();
 
@@ -158,7 +160,7 @@ public class Backpropagation extends Training {
                 double newWeight = 0.0;
                 for (int i = 0; i < n.getInputLayer().getNumberOfNeuronsInLayer(); i++) {
                     newWeight = hiddenLayerInputWeights.get(hidden_i)
-                            + (n.getLearningRate() * neuron.getSensibility()*n.getTrainSet()[row][i]);
+                            + (n.getLearningRate() * neuron.getSensibility() * n.getTrainSet()[row][i]);
 
                     neuron.getListOfWeightIn().set(hidden_i, newWeight);
 

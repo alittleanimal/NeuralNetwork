@@ -107,6 +107,29 @@ public class NeuralNet {
         }
     }
 
+    public double[][] getNetOutputValues(NeuralNet trainedNet) {
+        int rows = trainedNet.getTrainSet().length;
+        int cols = trainedNet.getOutputLayer().getNumberOfNeuronsInLayer();
+
+        double[][] matrixOutputValues = new double[rows][cols];
+
+        switch (trainedNet.trainType) {
+            case BACKPROPAGATION:
+                Backpropagation b = new Backpropagation();
+
+                for (int rows_i = 0; rows_i < rows; rows_i++) {
+                    for (int cols_i = 0; cols_i < cols; cols_i++) {
+                        matrixOutputValues[rows_i][cols_i] = b.forward(trainedNet, rows_i).getOutputLayer().getListOfNeurons().get(cols_i).getOutputValue();
+                    }
+                }
+                break;
+            default:
+                throw new IllegalArgumentException(trainedNet.trainType + " does not exist in TrainingTypesENUM");
+        }
+
+        return matrixOutputValues;
+    }
+
     public void netValidation(NeuralNet n){
         switch (n.trainType){
             case KOHONEN:

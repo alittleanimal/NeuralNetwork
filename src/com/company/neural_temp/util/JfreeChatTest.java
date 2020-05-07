@@ -4,15 +4,23 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.data.general.SeriesException;
+import org.jfree.data.time.Second;
+import org.jfree.data.time.TimeSeries;
+import org.jfree.data.time.TimeSeriesCollection;
+import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.time.Year;
+import java.util.Scanner;
 
 public class JfreeChatTest {
 
@@ -72,6 +80,15 @@ public class JfreeChatTest {
                 true, true, false
         );
 
+        // BarChart 3D
+//        JFreeChart barChart = ChartFactory.createBarChart3D(
+//                "Car Usage Statistics",
+//                "Category",
+//                "Score",
+//                dataset, PlotOrientation.VERTICAL,
+//                true, true, false
+//        );
+
         showChart(barChart, "BarChart Test");
     }
 
@@ -128,12 +145,102 @@ public class JfreeChatTest {
         showChart(xylineChart, "XYLineChart Test");
     }
 
+    private void testPieChart3D() {
+        DefaultPieDataset dataset = new DefaultPieDataset();
+        dataset.setValue("IPhone 5s", new Double(20));
+        dataset.setValue("SamSung Grand", new Double(20));
+        dataset.setValue("MotoG", new Double(40));
+        dataset.setValue("Nokia Lumia", new Double(10));
+
+        JFreeChart chart = ChartFactory.createPieChart3D(
+                "Mobile Sales", dataset,
+                true, true, false
+        );
+
+        PiePlot3D plot = (PiePlot3D) chart.getPlot();
+        plot.setStartAngle(170);
+        plot.setForegroundAlpha(0.70f);
+        plot.setInteriorGap(0.05);
+
+        showChart(chart, "PieChart 3D Test");
+    }
+
+    private void testPieChartFile() throws IOException {
+        String mobilebrands[] = {
+                "IPhone 5s",
+                "SamSung Grand",
+                "MotoG",
+                "Nokia Lumia"
+        };
+
+//        InputStream in = new FileInputStream(defineAbsoluteFilePath("src/data", "JfreeChartTest.txt"));
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        BufferedReader reader = new BufferedReader(new FileReader(defineAbsoluteFilePath("src/data", "JfreeChartTest.txt")));
+
+        try {
+            StringBuilder out = new StringBuilder();
+            String line;
+            DefaultPieDataset dataset = new DefaultPieDataset();
+
+            while ((line = reader.readLine()) != null) {
+                out.append(line);
+                out.append(System.lineSeparator());
+            }
+
+            Scanner scanner = new Scanner(out.toString());
+            int i = 0;
+            while (scanner.hasNextLine() && mobilebrands[i] != null) {
+                String[] strVector = scanner.nextLine().split(",");
+                dataset.setValue(mobilebrands[i], Double.parseDouble(strVector[1]));
+                i++;
+            }
+
+            JFreeChart chart = ChartFactory.createPieChart(
+                    "Mobile Sales", dataset,
+                    true, true, false
+            );
+
+            showChart(chart, "PieChart Test From File");
+        } finally {
+            reader.close();
+        }
+    }
+
+    private void testTimeSeriesChart() {
+        TimeSeries series = new TimeSeries("Random data", Second.class);
+        Second current = new Second();
+        double value = 100.0;
+
+        for (int i = 0; i < 1000; i++) {
+            try {
+                value = value + Math.random() - 0.5;
+                series.add(current, new Double(value));
+                current = (Second) current.next();
+            } catch (SeriesException e) {
+                System.err.println("Error adding to series");
+            }
+        }
+
+        XYDataset dataset = new TimeSeriesCollection(series);
+        JFreeChart timechart = ChartFactory.createTimeSeriesChart(
+                "Computing Test",
+                "Second",
+                "Value",
+                dataset, true, true, false
+        );
+
+        showChart(timechart, "TimeSeries Chart Test");
+    }
+
     public static void main(String[] args) throws IOException {
         JfreeChatTest jFreeChart = new JfreeChatTest();
-//        jFreeChart.testPieChart();
-//        jFreeChart.testBarChart();
-//        jFreeChart.testLineChart();
+        jFreeChart.testPieChart();
+        jFreeChart.testBarChart();
+        jFreeChart.testLineChart();
         jFreeChart.testXYLineChart();
+        jFreeChart.testPieChart3D();
+        jFreeChart.testPieChartFile();
+        jFreeChart.testTimeSeriesChart();
     }
 
     private void showChart(JFreeChart chart, String chartName) {
@@ -150,5 +257,29 @@ public class JfreeChatTest {
     private void saveChartJpeg(JFreeChart chart, String fileName) throws IOException {
         File pieChart = new File(fileName);
         ChartUtilities.saveChartAsJPEG(pieChart, chart, 640, 480);
+    }
+
+    private String defineAbsoluteFilePath(String path, String fileName) {
+        String absoluteFilePath = "";
+
+        String workingDir = System.getProperty("user.dir");
+        String OS = System.getProperty("os.name").toLowerCase();
+
+        if (OS.indexOf("win") >= 0) {
+            absoluteFilePath = workingDir + "\\" + path + "\\" + fileName;
+        } else {
+            absoluteFilePath = workingDir + "/" + path + "/" + fileName;
+        }
+
+        File file = new File(absoluteFilePath);
+
+        if (file.exists()) {
+            System.out.println("File found!");
+            System.out.println(absoluteFilePath);
+        } else {
+            System.out.println("File did not find...");
+        }
+
+        return absoluteFilePath;
     }
 }

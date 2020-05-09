@@ -22,7 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class JfreeChatTest {
+public class ChatTest {
 
     private void testPieChart() throws IOException {
         DefaultPieDataset dataset = new DefaultPieDataset();
@@ -233,7 +233,7 @@ public class JfreeChatTest {
     }
 
     public static void main(String[] args) throws IOException {
-        JfreeChatTest jFreeChart = new JfreeChatTest();
+        ChatTest jFreeChart = new ChatTest();
         jFreeChart.testPieChart();
         jFreeChart.testBarChart();
         jFreeChart.testLineChart();

@@ -10,8 +10,8 @@ import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 
-public class PieChatTest extends ApplicationFrame {
-    public PieChatTest(String title) {
+public class ChatTestSecond extends ApplicationFrame {
+    public ChatTestSecond(String title) {
         super(title);
         setContentPane(createDemoPanel());
     }
@@ -42,7 +42,7 @@ public class PieChatTest extends ApplicationFrame {
     }
 
     public static void main(String[] args) {
-        PieChatTest chatDemo = new PieChatTest("Mobile Sales");
+        ChatTestSecond chatDemo = new ChatTestSecond("Mobile Sales");
         chatDemo.setSize(560, 367);
         RefineryUtilities.centerFrameOnScreen(chatDemo);
         chatDemo.setVisible(true);

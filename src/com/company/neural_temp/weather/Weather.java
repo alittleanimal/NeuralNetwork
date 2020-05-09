@@ -11,11 +11,11 @@ import java.util.ArrayList;
 public class Weather {
     public static void main(String args[]) {
 
-        Data weatherDataInput = new Data("src/data", "inmet_13_14_input.csv");
-        Data weatherDataOutput = new Data("src/data", "inmet_13_14_output.csv");
+        Data weatherDataInput = new Data("src/data/weather", "inmet_13_14_input.csv");
+        Data weatherDataOutput = new Data("src/data/weather", "inmet_13_14_output.csv");
 
-        Data weatherDataInputTestRNA = new Data("src/data", "inmet_13_14_input_test.csv");
-        Data weatherDataOutputTestRNA = new Data("src/data", "inmet_13_14_output_test.csv");
+        Data weatherDataInputTestRNA = new Data("src/data/weather", "inmet_13_14_input_test.csv");
+        Data weatherDataOutputTestRNA = new Data("src/data/weather", "inmet_13_14_output_test.csv");
 
         Data.NormalizationTypesENUM NORMALIZATION_TYPE = Data.NormalizationTypesENUM.MAX_MIN_EQUALIZED;
 

@@ -1,6 +1,6 @@
 package com.company.neural_temp.util;
 
-public class Classfication {
+public class Classification {
 
     public double[][] calculateConfusionMatrix(double marginError, double[][] matrix) {
         double[][] confusionMatrix = new double[2][2];

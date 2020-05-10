@@ -73,12 +73,12 @@ public class Weather {
         }
     }
 
-    private static double[][] prepareDataForChart(Data.NormalizationTypesENUM type, double[][] output, NeuralNet n1Trained) {
+    private static double[][] prepareDataForChart(Data.NormalizationTypesENUM type, double[][] realOutput, NeuralNet n1Trained) {
         double[][] matrixOutputRNATest = n1Trained.getNetOutputValues(n1Trained);
-        double[][] matrixOutputRNADenormTest = new Data().denormalize(output, matrixOutputRNATest, type);
+        double[][] matrixOutputRNADenormTest = new Data().denormalize(realOutput, matrixOutputRNATest, type);
 
         ArrayList<double[][]> listOfArraysToJoinTest = new ArrayList<>();
-        listOfArraysToJoinTest.add(output);
+        listOfArraysToJoinTest.add(realOutput);
         listOfArraysToJoinTest.add(matrixOutputRNADenormTest);
 
         return new Data().joinArrays(listOfArraysToJoinTest);

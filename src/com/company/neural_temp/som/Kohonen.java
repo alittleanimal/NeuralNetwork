@@ -10,6 +10,8 @@ import java.util.List;
 
 public class Kohonen extends Training implements Validation {
 
+    public enum KohonenCaseStudyENUM {CARD, FINANCIAL_COMPANY};
+
     public NeuralNet train(NeuralNet n) {
 
         int rows = n.getTrainSet().length;
@@ -95,12 +97,15 @@ public class Kohonen extends Training implements Validation {
     }
 
     @Override
-    public void netValidation(NeuralNet n) {
+    public double[][] netValidation(NeuralNet n) {
         int rows = n.getValidationSet().length;
+
+        double[][] matrixEstimated = new double[rows][1];
 
         ArrayList<Double> listOfDistances = new ArrayList<>();
 
         double validationData[][] = n.getValidationSet();
+        KohonenCaseStudyENUM caseStudy = n.getKohonenCaseStudy();
 
         for (int row_i = 0; row_i < rows; row_i++) {
             listOfDistances = calcEuclideanDistance(n, validationData, row_i);
@@ -109,16 +114,50 @@ public class Kohonen extends Training implements Validation {
 
             System.out.println("### VALIDATION RESULT ###");
 
-            switch (winnerNeuron) {
-                case 0:
-                    System.out.println("CLUSTER 1");
+            switch (caseStudy) {
+                case CARD:
+                    switch (winnerNeuron) {
+                        case 0:
+                            System.out.println("1");
+                            matrixEstimated[row_i][0] = 1.0;
+                            break;
+                        case 1:
+                            System.out.println("-1");
+                            matrixEstimated[row_i][0] = -1.0;
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Error! Without neural clustering...");
+                    }
                     break;
-                case 1:
-                    System.out.println("CLUSTER 2");
+
+                case FINANCIAL_COMPANY:
+                    switch (winnerNeuron) {
+                        case 0:
+                            System.out.println("1");
+                            matrixEstimated[row_i][0] = 1.0;
+                            break;
+                        case 1:
+                            System.out.println("2");
+                            matrixEstimated[row_i][0] = 2.0;
+                            break;
+                        case 2:
+                            System.out.println("3");
+                            matrixEstimated[row_i][0] = 3.0;
+                            break;
+                        case 3:
+                            System.out.println("4");
+                            matrixEstimated[row_i][0] = 4.0;
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Error! Without neural clustering...");
+                    }
                     break;
                 default:
-                    throw new IllegalArgumentException("Error! Without neural clustering...");
+                    throw new IllegalArgumentException("Error! Case Study does not exist...");
             }
+
         }
+
+        return matrixEstimated;
     }
 }

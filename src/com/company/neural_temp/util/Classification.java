@@ -86,4 +86,18 @@ public class Classification {
 
         return matrixOneColumn;
     }
+
+    public void getConfusionMatrixCommon(double marginError, double[][] matrix) {
+        double[][] confusionMatrix = calculateConfusionMatrix(marginError, matrix);
+        printConfusionMatrix(confusionMatrix);
+
+        //SENSITIVITY
+        System.out.println("SENSITIVITY = " + calculateSensitivity(confusionMatrix));
+
+        //SPECIFICITY
+        System.out.println("SPECIFICITY = " + calculateSpecificity(confusionMatrix));
+
+        //ACCURACY
+        System.out.println("ACCURACY    = " + calculateAccuracy(confusionMatrix));
+    }
 }

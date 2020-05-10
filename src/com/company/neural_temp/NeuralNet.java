@@ -26,6 +26,7 @@ public class NeuralNet {
     private Training.TrainingTypesENUM trainType;
     private Training.ActivationFncEnum activationFnc;
     private Training.ActivationFncEnum activationFncOutputLayer;
+    private Kohonen.KohonenCaseStudyENUM kohonenCaseStudy;
 
     public NeuralNet initNet(int numberOfInputNeurons, int numberOfHiddenLayers, int numberOfNeuronsInHiddenLayer, int numberOfOutputNeurons) {
         inputLayer = new InputLayer();
@@ -130,12 +131,11 @@ public class NeuralNet {
         return matrixOutputValues;
     }
 
-    public void netValidation(NeuralNet n){
+    public double[][] netValidation(NeuralNet n){
         switch (n.trainType){
             case KOHONEN:
                 Kohonen k = new Kohonen();
-                k.netValidation(n);
-                break;
+                return k.netValidation(n);
             default:
                 throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypesEnum");
         }
@@ -293,5 +293,13 @@ public class NeuralNet {
 
     public void setValidationSet(double[][] validationSet) {
         this.validationSet = validationSet;
+    }
+
+    public Kohonen.KohonenCaseStudyENUM getKohonenCaseStudy() {
+        return kohonenCaseStudy;
+    }
+
+    public void setKohonenCaseStudy(Kohonen.KohonenCaseStudyENUM kohonenCaseStudy) {
+        this.kohonenCaseStudy = kohonenCaseStudy;
     }
 }

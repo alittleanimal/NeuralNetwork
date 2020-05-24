@@ -1,6 +1,7 @@
 package com.company.neural_temp;
 
 import com.company.neural_temp.learn.*;
+import com.company.neural_temp.som.ART;
 import com.company.neural_temp.som.Kohonen;
 
 import java.util.ArrayList;
@@ -22,6 +23,9 @@ public class NeuralNet {
     private double trainingError;
     private double errorMean;
 
+    private double learningRatePercentageReduce;
+    private double matchRate;
+
     private ArrayList<Double> listOfMSE = new ArrayList<>();
     private Training.TrainingTypesENUM trainType;
     private Training.ActivationFncEnum activationFnc;
@@ -30,21 +34,21 @@ public class NeuralNet {
 
     public NeuralNet initNet(int numberOfInputNeurons, int numberOfHiddenLayers, int numberOfNeuronsInHiddenLayer, int numberOfOutputNeurons) {
         inputLayer = new InputLayer();
-        inputLayer.setNumberOfNeuronsInLayer( numberOfInputNeurons );
+        inputLayer.setNumberOfNeuronsInLayer(numberOfInputNeurons);
 
         listOfHiddenLayer = new ArrayList<>();
         for (int i = 0; i < numberOfHiddenLayers; i++) {
             hiddenLayer = new HiddenLayer();
-            hiddenLayer.setNumberOfNeuronsInLayer( numberOfNeuronsInHiddenLayer );
-            listOfHiddenLayer.add( hiddenLayer );
+            hiddenLayer.setNumberOfNeuronsInLayer(numberOfNeuronsInHiddenLayer);
+            listOfHiddenLayer.add(hiddenLayer);
         }
 
         outputLayer = new OutputLayer();
-        outputLayer.setNumberOfNeuronsInLayer( numberOfOutputNeurons );
+        outputLayer.setNumberOfNeuronsInLayer(numberOfOutputNeurons);
 
         inputLayer = inputLayer.initLayer(inputLayer);
 
-        if(numberOfHiddenLayers > 0) {
+        if (numberOfHiddenLayers > 0) {
             listOfHiddenLayer = hiddenLayer.initLayer(hiddenLayer, listOfHiddenLayer, inputLayer, outputLayer);
         }
 
@@ -60,7 +64,7 @@ public class NeuralNet {
         return newNet;
     }
 
-    public NeuralNet trainNet (NeuralNet n) {
+    public NeuralNet trainNet(NeuralNet n) {
         NeuralNet trainedNet = new NeuralNet();
 
         switch (n.trainType) {
@@ -76,6 +80,10 @@ public class NeuralNet {
                 Backpropagation b = new Backpropagation();
                 trainedNet = b.train(n);
                 return trainedNet;
+            case BACKPROPAGATION_ONLINE:
+                BackpropagationOnline bo = new BackpropagationOnline();
+                trainedNet = bo.train(n);
+                return trainedNet;
             case LEVENBERG_MARQUARDT:
                 LevenbergMarquardt mq = new LevenbergMarquardt();
                 trainedNet = mq.train(n);
@@ -83,6 +91,10 @@ public class NeuralNet {
             case KOHONEN:
                 Kohonen k = new Kohonen();
                 trainedNet = k.train(n);
+                return trainedNet;
+            case ART:
+                ART art = new ART();
+                trainedNet = art.train(n);
                 return trainedNet;
             default:
                 throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypeENUM");
@@ -93,18 +105,18 @@ public class NeuralNet {
         switch (n.trainType) {
             case PERCEPTRON:
                 Perceptron t = new Perceptron();
-                t.printTrainedNetResult( n );
+                t.printTrainedNetResult(n);
                 break;
             case ADALINE:
                 Adaline a = new Adaline();
-                a.printTrainedNetResult( n );
+                a.printTrainedNetResult(n);
                 break;
             case BACKPROPAGATION:
                 Backpropagation b = new Backpropagation();
                 b.printTrainedNetResult(n);
                 break;
             default:
-                throw new IllegalArgumentException(n.trainType+" does not exist in TrainingTypesENUM");
+                throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypesENUM");
         }
     }
 
@@ -124,6 +136,16 @@ public class NeuralNet {
                     }
                 }
                 break;
+            case BACKPROPAGATION_ONLINE:
+                BackpropagationOnline bo = new BackpropagationOnline();
+                for (int rows_i = 0; rows_i < rows; rows_i++) {
+                    for (int cols_i = 0; cols_i < cols; cols_i++) {
+
+                        matrixOutputValues[rows_i][cols_i] = bo.forward(trainedNet, rows_i).getOutputLayer().getListOfNeurons().get(cols_i).getOutputValue();
+
+                    }
+                }
+                break;
             default:
                 throw new IllegalArgumentException(trainedNet.trainType + " does not exist in TrainingTypesENUM");
         }
@@ -131,11 +153,14 @@ public class NeuralNet {
         return matrixOutputValues;
     }
 
-    public double[][] netValidation(NeuralNet n){
-        switch (n.trainType){
+    public double[][] netValidation(NeuralNet n) {
+        switch (n.trainType) {
             case KOHONEN:
                 Kohonen k = new Kohonen();
                 return k.netValidation(n);
+            case ART:
+                ART art = new ART();
+                return art.netValidation(n);
             default:
                 throw new IllegalArgumentException(n.trainType + " does not exist in TrainingTypesEnum");
         }
@@ -301,5 +326,21 @@ public class NeuralNet {
 
     public void setKohonenCaseStudy(Kohonen.KohonenCaseStudyENUM kohonenCaseStudy) {
         this.kohonenCaseStudy = kohonenCaseStudy;
+    }
+
+    public double getLearningRatePercentageReduce() {
+        return learningRatePercentageReduce;
+    }
+
+    public void setLearningRatePercentageReduce(double learningRatePercentageReduce) {
+        this.learningRatePercentageReduce = learningRatePercentageReduce;
+    }
+
+    public double getMatchRate() {
+        return matchRate;
+    }
+
+    public void setMatchRate(double matchRate) {
+        this.matchRate = matchRate;
     }
 }
